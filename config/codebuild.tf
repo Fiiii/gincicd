@@ -1,10 +1,10 @@
-resource "aws_s3_bucket" "library-build" {
-  bucket = "library-api"
+resource "aws_s3_bucket" "fii-build" {
+  bucket = "fii-api"
   acl    = "private"
 }
 
-resource "aws_iam_role" "code-build-library" {
-  name = "library-codebuild"
+resource "aws_iam_role" "code-build-fii" {
+  name = "fii-codebuild"
 
   assume_role_policy = <<EOF
 {
@@ -23,7 +23,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "s3-policy" {
-  role = aws_iam_role.code-build-library.name
+  role = aws_iam_role.code-build-fii.name
   policy = <<EOF
   {
   "Version": "2012-10-17",
@@ -45,8 +45,8 @@ resource "aws_iam_role_policy" "s3-policy" {
         "s3:*"
       ],
       "Resource": [
-        "${aws_s3_bucket.library-build.arn}",
-        "${aws_s3_bucket.library-build.arn}/*"
+        "${aws_s3_bucket.fii-build.arn}",
+        "${aws_s3_bucket.fii-build.arn}/*"
       ]
     }
   ]
@@ -56,7 +56,7 @@ EOF
 
 
 resource "aws_iam_role_policy" "ecr-policy" {
-  role   = aws_iam_role.code-build-library.name
+  role   = aws_iam_role.code-build-fii.name
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -85,11 +85,11 @@ EOF
 }
 
 
-resource "aws_codebuild_project" "library-build" {
-  name = "library-build"
+resource "aws_codebuild_project" "fii-build" {
+  name = "fii-build"
   description = "Easy build to generate docker image for Golang Applications"
   build_timeout = "5"
-  service_role = aws_iam_role.code-build-library.arn
+  service_role = aws_iam_role.code-build-fii.arn
 
   artifacts {
     type = "NO_ARTIFACTS"
@@ -97,7 +97,7 @@ resource "aws_codebuild_project" "library-build" {
 
   cache {
     type = "S3"
-    location = aws_s3_bucket.library-build.bucket
+    location = aws_s3_bucket.fii-build.bucket
   }
 
   environment {
@@ -131,7 +131,7 @@ privileged_mode = true
 
     s3_logs {
       status = "ENABLED"
-      location = "${aws_s3_bucket.library-build.id}/build-log"
+      location = "${aws_s3_bucket.fii-build.id}/build-log"
     }
   }
 
@@ -143,8 +143,8 @@ privileged_mode = true
   }
 }
 
-resource "aws_codebuild_webhook" "library-webhook" {
-  project_name = aws_codebuild_project.library-build.name
+resource "aws_codebuild_webhook" "fii-webhook" {
+  project_name = aws_codebuild_project.fii-build.name
 
   filter_group {
     filter {
@@ -164,6 +164,6 @@ resource "aws_codebuild_webhook" "library-webhook" {
   }
 }
 
-resource "aws_ecr_repository" "library-ecr" {
+resource "aws_ecr_repository" "fii-ecr" {
   name = var.IMAGE_REPO_NAME
 }

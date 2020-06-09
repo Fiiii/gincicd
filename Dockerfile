@@ -6,12 +6,12 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 RUN go get -d -v
-RUN go build -o library
+RUN go build -o fiicicd
 
 FROM golang:alpine
 
-COPY --from=builder /app/library /
+COPY --from=builder /app/fiicicd /
 
 EXPOSE 8080
 
-ENTRYPOINT ["/library"]
+ENTRYPOINT ["/fiicicd"]

@@ -1,1 +1,4 @@
 .idea
+/config/terraform.tfstate
+/config/terraform.tfstate.backup
+.terraform
