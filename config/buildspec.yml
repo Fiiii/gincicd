@@ -1,0 +1,31 @@
+version: 0.2
+
+git-credential-helper: yes
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - echo "loggin to AWS ECR"
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+
+  build:
+    commands:
+      - echo "Getting Tag.."
+      - |
+        if [ -z $CODEBUILD_WEBHOOK_TRIGGER ]; then
+          export IMAGE_TAG=$CODEBUILD_SOURCE_VERSION
+        else
+          export IMAGE_TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | cut -d "/" -f2)
+          fi
+      - echo "verify tag.."
+      - echo $IMAGE_TAG
+      - echo "Building the docker image.."
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo "Pushing Docker image"
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
