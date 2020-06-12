@@ -1,0 +1,14 @@
+{
+  "cluster": "fiicicd-demo-cluster",
+  "serviceName": "fiicicd-service",
+  "taskDefinition": "fiicicd-service",
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:eu-central-1:568614285549:targetgroup/fiicicd-target-group2/41a1675139234d5b",
+      "containerName": "fiicicd-service",
+      "containerPort": 8080
+    }
+  ],
+  "desiredCount": 1,
+  "role": ""
+}
