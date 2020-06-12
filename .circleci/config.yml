@@ -70,5 +70,5 @@ workflows:
             - aws-ecr/build-and-push-image
           aws-region: AWS_DEFAULT_REGION
           family: 'fiicicd-service'
-          cluster-name: '$fiicicd-cluster'
+          cluster-name: '$fiicicd-demo-cluster'
           container-image-name-updates: 'container=fiicicd-service,tag=${CIRCLE_SHA1}'
