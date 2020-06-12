@@ -1,0 +1,21 @@
+{
+  "family": "fiicicd-service",
+  "containerDefinitions": [
+    {
+      "name": "fiicicd-service",
+      "image": "568614285549.dkr.ecr.eu-central-1.amazonaws.com/fiicicd:latest",
+      "cpu": 128,
+      "memoryReservation": 128,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "command": [
+        "./main"
+      ],
+      "essential": true
+    }
+  ]
+}

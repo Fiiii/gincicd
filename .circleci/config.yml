@@ -63,12 +63,12 @@ workflows:
           create-repo: true
           dockerfile: Dockerfile
           region: AWS_DEFAULT_REGION
-          repo: '${MY_APP_PREFIX}'
+          repo: 'fiicicd'
           tag: '${CIRCLE_SHA1}'
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
           aws-region: AWS_DEFAULT_REGION
-          family: '${MY_APP_PREFIX}-service'
-          cluster-name: '${MY_APP_PREFIX}-cluster'
-          container-image-name-updates: 'container=${MY_APP_PREFIX}-service,tag=${CIRCLE_SHA1}'
+          family: 'fiicicd-service'
+          cluster-name: '$fiicicd-cluster'
+          container-image-name-updates: 'container=fiicicd-service,tag=${CIRCLE_SHA1}'
